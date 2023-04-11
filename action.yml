@@ -1,0 +1,17 @@
+name: 'Download artifacts Plus'
+description: 'Download and extract artifacts'
+author: 'nanoufo'
+branding:
+  icon: arrow-up-circle
+  color: blue
+inputs:
+  path:
+    description: 'A file or wildcard pattern that describes what to upload'
+    required: true
+  github-token:
+    description: 'GitHub token to use for authentication'
+    required: false
+    default: ${{ github.token }}
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
