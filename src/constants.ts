@@ -1,8 +1,7 @@
 export enum Inputs {
   Path = "path",
   Names = "names",
-  IfNoArtifactFound = "if-no-artifact-found",
-  IfArtifactsOverlap = "if-artifacts-overlap",
+  IfNoArtifactsMatch = "if-no-artifacts-match",
 }
 
 export enum FailureHandlingStrategy {

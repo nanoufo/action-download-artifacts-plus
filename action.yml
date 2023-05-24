@@ -2,16 +2,29 @@ name: 'Download artifacts Plus'
 description: 'Download and extract artifacts'
 author: 'nanoufo'
 branding:
-  icon: arrow-up-circle
-  color: blue
+  icon: chevrons-down
+  color: purple
 inputs:
   path:
-    description: 'A file or wildcard pattern that describes what to upload'
-    required: true
-  github-token:
-    description: 'GitHub token to use for authentication'
+    description: >
+      The directory to which the downloaded artifacts will be extracted.
+    required: no
+  names:
+    description: >
+      A list of wildcard patterns used to match against artifact names. 
+      Each pattern should be placed on a separate line, and at least one of the patterns must match the artifact name for it to be downloaded.
+    default: '*'
     required: false
-    default: ${{ github.token }}
+  if-no-artifacts-match:
+    description: >
+      The desired behavior when there is a pattern with no matching artifacts.
+      
+      Available options:
+        warn: display a warning but do not fail the action
+        error: fail the action with an error message
+        ignore: do not output any warnings or errors
+    default: 'warn'
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'

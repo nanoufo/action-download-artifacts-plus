@@ -1,10 +1,12 @@
 import * as core from "@actions/core";
+import { InputOptions } from "@actions/core";
 import { ActionInputs } from "./action-inputs";
 import { FailureHandlingStrategy, Inputs } from "./constants";
-import { InputOptions } from "@actions/core";
+import { Minimatch } from "minimatch";
 
 interface GetInputHelper<T> {
   (name: string, options: InputOptions & { required: true }): T;
+
   (name: string, options?: InputOptions): T | undefined;
 }
 
@@ -44,23 +46,28 @@ const getStringInput = makeInputHelper((valueStr) => valueStr);
 const getFailureHandlingStrategyInput = makeEnumInputHelper(
   FailureHandlingStrategy
 );
+const getMinimatchArrayInput = makeInputHelper((str) => {
+  return str
+    .split("\n")
+    .filter((line) => line)
+    .map((line) => new Minimatch(line));
+});
+
+function getWorkSpaceDirectory(): string {
+  const workspaceDirectory = process.env["GITHUB_WORKSPACE"];
+  if (!workspaceDirectory) {
+    throw new Error("Unable to get GITHUB_WORKSPACE env variable");
+  }
+  return workspaceDirectory;
+}
 
 export function getInputs(): ActionInputs {
-  // required means that either the input must be provided directly or via the default value in action.yml
-  const inputs: ActionInputs = {
-    path: getStringInput(Inputs.Path, { required: true }),
-    names: getStringInput(Inputs.Names, { required: true })
-      .split("\n")
-      .filter((line) => line.trim()),
-    ifNoArtifactsFound: getFailureHandlingStrategyInput(
-      Inputs.IfNoArtifactFound,
-      { required: true }
-    ),
-    ifArtifactsOverlap: getFailureHandlingStrategyInput(
-      Inputs.IfArtifactsOverlap,
+  return {
+    path: getStringInput(Inputs.Path) ?? getWorkSpaceDirectory(),
+    names: getMinimatchArrayInput(Inputs.Names, { required: true }),
+    ifNoArtifactsMatch: getFailureHandlingStrategyInput(
+      Inputs.IfNoArtifactsMatch,
       { required: true }
     ),
   };
-
-  return inputs;
 }

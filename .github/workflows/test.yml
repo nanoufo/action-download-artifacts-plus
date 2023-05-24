@@ -1,0 +1,39 @@
+name: Test the action
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  upload-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - run: mkdir artifacts && cd artifacts && echo Hello | tee aaa aba bbb baa
+      - name: Upload artifacts
+        uses: nanoufo/action-upload-artifacts-and-release-assets@v1.8
+        with:
+          path: ./artifacts/*
+  download-artifacts:
+    runs-on: ubuntu-latest
+    needs: [upload-artifacts]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          path: out
+          names: |
+            a*
+            j*
+      - run: |
+          DOWNLOADED_ARTIFACTS=$(ls -1 out | tr "\n" " ")
+          EXPECTED_ARTIFACTS="aaa aba "
+          if [[ $DOWNLOADED_ARTIFACTS != $EXPECTED_ARTIFACTS ]]; then
+            echo "Expected: $EXPECTED_ARTIFACTS"
+            echo "Actual: $DOWNLOADED_ARTIFACTS"
+            exit 1
+          fi
