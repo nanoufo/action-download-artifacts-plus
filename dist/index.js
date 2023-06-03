@@ -4334,9 +4334,9 @@ const getMinimatchArrayInput = makeInputHelper((str) => {
         .map((line) => new minimatch_1.Minimatch(line));
 });
 function getWorkSpaceDirectory() {
-    const workspaceDirectory = process.env['GITHUB_WORKSPACE'];
+    const workspaceDirectory = process.env["GITHUB_WORKSPACE"];
     if (!workspaceDirectory) {
-        throw new Error('Unable to get GITHUB_WORKSPACE env variable');
+        throw new Error("Unable to get GITHUB_WORKSPACE env variable");
     }
     return workspaceDirectory;
 }
