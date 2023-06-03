@@ -9,7 +9,7 @@ Advanced action for downloading multiple artifacts.
 
 ```yaml
 - name: Download all .deb and .rpm artifacts 
-  uses: nanoufo/action-download-artifacts-plus@main  
+  uses: nanoufo/action-download-artifacts-plus@v1.0  
   with:
     path: ./artifacts
     names: |
